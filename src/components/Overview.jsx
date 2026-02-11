@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const Overview = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center px-8 py-16">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-8 py-16">
       <motion.div 
         className="max-w-4xl mx-auto"
         initial={{ opacity: 0, y: 20 }}

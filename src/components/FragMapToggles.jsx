@@ -1,21 +1,43 @@
 import React, { memo } from 'react';
 import IsoValueSlider from './IsoValueSlider';
+import { fragMapTypes, fragMapDefaults } from '../config/fragMapTypes.js';
 
+/**
+ * FragMapToggles Component
+ * Provides UI controls for toggling FragMap visibility and adjusting isovalues
+ * Uses props-based interface for compatibility with fixed InteractiveViewer
+ */
 const FragMapToggles = memo(({ 
   activeFragMaps, 
   onToggleFragMap, 
   fragMapTypes, 
   isoValues, 
-  onIsoValueChange 
+  onIsoValueChange,
+  selectedProteinPart
 }) => {
   return (
     <div className="control-panel">
-      <h3 className="text-lg font-semibold mb-4 text-white">SILCS FragMaps</h3>
+      <h3 className="text-lg font-semibold mb-4 text-white leading-relaxed">SILCS FragMaps</h3>
+      
+      {!selectedProteinPart || !selectedProteinPart.residues || selectedProteinPart.residues.length === 0 ? (
+        <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
+          <p className="text-sm text-yellow-200">
+            <span className="font-semibold">Instructions:</span> Click on a protein part first to select it, then enable FragMaps to see interaction sites for that specific region.
+          </p>
+        </div>
+      ) : (
+        <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg">
+          <p className="text-sm text-green-200">
+            <span className="font-semibold">Region Selected:</span> {selectedProteinPart.description}
+          </p>
+        </div>
+      )}
       
       <div className="space-y-3">
         {fragMapTypes.map((fragMap) => {
           const isActive = activeFragMaps.has(fragMap.id);
           const currentIsoValue = isoValues[fragMap.id] || fragMap.isoValue;
+          const isDisabled = !selectedProteinPart || !selectedProteinPart.residues || selectedProteinPart.residues.length === 0;
           
           return (
             <div
@@ -24,12 +46,22 @@ const FragMapToggles = memo(({
             >
               <button
                 onClick={(e) => {
+                  if (isDisabled) {
+                    e.preventDefault();
+                    return;
+                  }
+                  console.log(`🖱️ BUTTON CLICKED: ${fragMap.id}`);
                   e.preventDefault();
+                  e.stopPropagation();
                   onToggleFragMap(fragMap.id);
                 }}
+                disabled={isDisabled}
                 className={`w-full fragmap-button text-left text-sm transition-colors ${
                   isActive ? 'active' : 'inactive'
+                } ${
+                  isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'
                 }`}
+                title={isDisabled ? 'Select a protein part first' : `Toggle ${fragMap.name} FragMap`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
@@ -40,6 +72,9 @@ const FragMapToggles = memo(({
                     <div>
                       <div className="font-medium">{fragMap.name}</div>
                       <div className="text-xs text-gray-400">{fragMap.description}</div>
+                      {isActive && fragMap.bindingRelevance && (
+                        <div className="text-xs text-blue-400 mt-1 italic">{fragMap.bindingRelevance}</div>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -82,10 +117,11 @@ const FragMapToggles = memo(({
                     label="Isovalue"
                     value={currentIsoValue}
                     onChange={(value) => onIsoValueChange(fragMap.id, value)}
-                    min={0.1}
-                    max={3.0}
-                    step={0.1}
+                    min={fragMap.minIsoValue || fragMapDefaults.minIsoValue}
+                    max={fragMap.maxIsoValue || fragMapDefaults.maxIsoValue}
+                    step={fragMapDefaults.isoValueStep}
                     color={fragMap.color}
+                    presetValues={fragMapDefaults.presetValues}
                   />
                 </div>
               )}

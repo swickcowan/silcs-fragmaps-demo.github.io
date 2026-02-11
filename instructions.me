@@ -1,0 +1,106 @@
+SilcsBio Candidate Exercise Instructions
+Interactive Visualization Demo for P38 MAP Kinase (PDB: 3FLY) Using SILCS FragMaps
+Repository Name Requirement: silcs-fragmaps-demo
+1. Overview
+As part of the next stage of our interview process, you will build a small interactive demo that visualizes:
+● The P38 MAP Kinase protein (PDB 3FLY)
+● SILCS FragMaps provided by SilcsBio
+● Multiple ligands scored using SILCS‑MC Pose Refinement
+● A clear, concise scientific narrative that explains the key interaction features
+This exercise is designed to assess your ability to combine scientific understanding, front‑end
+development, and communication in a lightweight prototype similar to the current interactive demo on
+the silcsbio.com website. You may also refer to a video tutorial for visualizing SILCS FragMaps in SilcsBio
+GUI here: https://docs.silcsbio.com/2025/videotutorials.html#
+2. Required Repository Setup
+Before starting:
+1. Create a public GitHub repository named silcs-fragmaps-demo and in configuration add
+license type: MIT License.
+2. Add aakognole as a collaborator with write access. We will upload input files along with a
+README.md file with information on each input file.
+3. What You Need to Build
+Your interactive demo should include the following elements.
+2
+A. Overview / Introduction Page
+Provide a short, readable explanation covering:
+● What P38 MAP Kinase is (biological role)
+● The crystal ligand(s) being shown
+● What SILCS FragMaps represent
+● Why FragMaps help interpret ligand binding
+● What the user can do or explore in the demo
+This should be concise, 1–2 paragraphs are enough.
+B. Interactive Visualization Page (Required)
+Use an open‑source web-based 3D visualization library of your choice.
+Examples include:
+● Mol* (https://molstar.org)
+● 3Dmol.js (https://3dmol.csb.pitt.edu)
+● LiteMol
+● NGL Viewer
+Your viewer must support:
+● Loading the 3FLY PDB structure
+● Showing different bound ligand(s) or the SILCS‑MC refined ligand poses
+● Loading and overlaying SILCS FragMaps
+● Basic user controls such as:
+○ Show/hide individual FragMap surfaces
+○ Adjust view (rotate, translate, zoom etc)
+○ Adjust iso‑value (slider or preset levels) if possible
+Include a simple caption or sidebar describing what the user is seeing.
+C. Navigation / Structure
+At minimum, your demo should offer:
+● Home / Overview
+● Interactive Viewer
+3
+4. Technical Requirements
+● The website must run entirely client‑side. You may use any free hosting provider, such as: GitHub
+Pages, Netlify, Vercel, Render etc. Static hosting is sufficient; no backend services are needed.
+● Use only open‑source libraries and tools.
+● Include the following in your repo:
+○ HTML, CSS, JavaScript or framework code
+○ Provided protein PDB and ligand SDF files
+○ Provided SILCS FragMaps (.map and .dx format)
+○ A clean directory structure (e.g., /assets, /src, etc.)
+You may develop using:
+● Plain JavaScript
+● Vue / React / Svelte
+● TypeScript
+Framework choice does not affect evaluation.
+5. Deliverables
+When finished, submit:
+1. GitHub Repository URL
+2. Live URL hosted at any free provider
+3. README.md containing:
+○ Project overview
+○ Short scientific explanation
+○ Instructions to run locally if hosting is not available.
+○ Notes about design decisions or tradeoffs
+Optional (nice to have):
+● A short (1–2 min) walkthrough video highlighting the viewer features
+● Suggestions for future improvements
+6. Evaluation Criteria (100 points total)
+Scientific Understanding – 25 points
+4
+● Clear, accurate explanation of system of interest and ligands being analyzed
+● Correct interpretation of FragMaps and their relevance
+Technical Implementation – 45 points
+● Viewer loads properly in browser
+● FragMaps display cleanly
+● Visualization controls work (toggle maps, switch ligands, iso‑value adjustment)
+● Smooth user experience
+Code Quality & Structure – 15 points
+● Clean, readable organization
+● Sensible file structure
+● Appropriate comments
+Documentation & Communication – 15 points
+● Clear README
+● Simple, intuitive navigation
+● Clear narrative accompanying the visualization
+Passing threshold: 75/100
+7. Expected Time Commitment
+Total expected effort: 8-12 hours
+You may spread this over up to 14 days.
+This is a prototype exercise, not a production application.
+8. Questions & Support
+We cannot debug your code for you, but we will clarify:
+● FragMap formats
+● The SILCS‑MC pose refinement file structure
+● Data organization
+Please email any questions you have before submitting.

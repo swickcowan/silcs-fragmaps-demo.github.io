@@ -2,16 +2,28 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Overview from './components/Overview';
 import InteractiveViewer from './components/InteractiveViewer';
+import { ViewerProvider } from './context/ViewerContext';
 
+/**
+ * Main Application Component
+ * Handles routing between overview and interactive viewer sections
+ * Manages hash-based navigation for single-page application behavior
+ */
 const App = () => {
   const [currentSection, setCurrentSection] = useState('overview');
 
-  // Handle navigation
+  /**
+   * Handles navigation between different sections
+   * @param {string} section - Target section ('overview' or 'interactive')
+   */
   const handleNavigate = (section) => {
     setCurrentSection(section);
   };
 
-  // Handle hash changes
+  /**
+   * Handles hash changes for browser navigation and deep linking
+   * Updates the current section based on URL hash
+   */
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1);
@@ -42,7 +54,9 @@ const App = () => {
         </div>
       ) : (
         <div className="min-h-screen pt-16">
-          <InteractiveViewer />
+          <ViewerProvider>
+            <InteractiveViewer />
+          </ViewerProvider>
         </div>
       )}
 

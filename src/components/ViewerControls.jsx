@@ -1,20 +1,85 @@
 import React from 'react';
 
-const ViewerControls = ({ viewer }) => {
+/**
+ * ViewerControls Component
+ * Provides camera controls for 3Dmol.js molecular viewer
+ * Uses props-based interface for compatibility with fixed InteractiveViewer
+ */
+const ViewerControls = ({ viewer, onReset }) => {
   const handleReset = async () => {
     if (viewer) {
       try {
-        if (viewer.state) {
-          // Real Molstar viewer
-          const { PluginCommands } = await import('molstar/lib/mol-plugin/commands');
-          await PluginCommands.Camera.Reset(viewer, {});
+        // Check if we have a real 3Dmol viewer or mock viewer
+        if (viewer.viewer) {
+          // Real 3Dmol viewer
+          await viewer.resetView();
         } else {
           // Mock viewer
-          await viewer.camera.reset();
-          await viewer.camera.focus();
+          console.log('Mock viewer reset');
         }
       } catch (error) {
-        console.error('Error resetting camera:', error);
+        console.error('Error resetting view:', error);
+      }
+    }
+
+    if (onReset) {
+      onReset();
+    }
+  };
+
+  const handleToggleRepresentation = async (type) => {
+    if (viewer) {
+      try {
+        // Check if we have a real 3Dmol viewer or mock viewer
+        if (viewer.viewer) {
+          // Real 3Dmol viewer
+          console.log(`Toggling ${type} representation in 3Dmol viewer`);
+
+          // For 3Dmol.js, we would need to track representations differently
+          // This is a simplified implementation
+          if (type === 'cartoon') {
+            // Toggle cartoon representation
+            const hasCartoon = Array.from(viewer.models.values()).some(model => model.type === 'protein');
+            if (hasCartoon) {
+              // Remove cartoon representations
+              const proteinModels = [];
+              for (const [modelId, model] of viewer.models) {
+                if (model.type === 'protein') {
+                  proteinModels.push(modelId);
+                }
+              }
+              for (const modelId of proteinModels) {
+                viewer.clearRepresentations(modelId);
+              }
+            } else {
+              // Add cartoon representation (would need to reload protein)
+              console.log('Would reload protein with cartoon representation');
+            }
+          } else if (type === 'ball-and-stick') {
+            // Toggle ball-and-stick representation
+            const hasBallAndStick = Array.from(viewer.models.values()).some(model => model.type === 'ligand');
+            if (hasBallAndStick) {
+              // Remove ball-and-stick representations
+              const ligandModels = [];
+              for (const [modelId, model] of viewer.models) {
+                if (model.type === 'ligand') {
+                  ligandModels.push(modelId);
+                }
+              }
+              for (const modelId of ligandModels) {
+                viewer.clearRepresentations(modelId);
+              }
+            } else {
+              // Add ball-and-stick representation (would need to reload ligand)
+              console.log('Would reload ligand with ball-and-stick representation');
+            }
+          }
+        } else {
+          // Mock viewer
+          console.log(`Mock toggling ${type} representation`);
+        }
+      } catch (error) {
+        console.error('Error toggling representation:', error);
       }
     }
   };
@@ -22,25 +87,14 @@ const ViewerControls = ({ viewer }) => {
   const handleSpin = async () => {
     if (viewer) {
       try {
-        if (viewer.state) {
-          // Real Molstar viewer
-          const { PluginCommands } = await import('molstar/lib/mol-plugin/commands');
-          const isAnimating = viewer.canvas3d?.context?.animation?.isAnimating;
-          if (isAnimating) {
-            await PluginCommands.Animation.Stop(viewer, {});
-          } else {
-            await PluginCommands.Animation.Play(viewer, {
-              params: { name: 'spin' }
-            });
-          }
+        // Check if we have a real 3Dmol viewer or mock viewer
+        if (viewer.viewer) {
+          // Real 3Dmol viewer - toggle spinning
+          const isSpinning = viewer.viewer.isSpinning?.() || false;
+          viewer.setSpin(!isSpinning, 1);
         } else {
           // Mock viewer
-          const isSpinning = viewer.animation?.isAnimating;
-          if (isSpinning) {
-            await viewer.animation.stop();
-          } else {
-            await viewer.animation.rotate({ axis: 'y', speed: 0.5 });
-          }
+          console.log('Mock toggling spin');
         }
       } catch (error) {
         console.error('Error toggling spin:', error);
@@ -48,65 +102,19 @@ const ViewerControls = ({ viewer }) => {
     }
   };
 
-  const handleToggleRepresentation = async (type) => {
+  const handleZoomToFit = async () => {
     if (viewer) {
       try {
-        if (viewer.state) {
-          // Real Molstar viewer
-          const { PluginCommands } = await import('molstar/lib/mol-plugin/commands');
-          
-          // Find existing representations
-          const representations = viewer.state.data.selectQ(q => q.ofType('representation-3d'));
-          const hasRep = representations.some(rep => rep.transform?.params?.type === type);
-
-          if (hasRep) {
-            // Remove representation
-            await PluginCommands.State.RemoveObject(viewer, { 
-              state: viewer.state.data, 
-              ref: representations.find(rep => rep.transform?.params?.type === type)?.ref 
-            });
-          } else {
-            // Add representation
-            await PluginCommands.State.Update(viewer, {
-              state: viewer.state.data,
-              tree: {
-                name: `${type}-rep`,
-                type: 'mol-star',
-                transform: [
-                  { type: 'create-structure-representation', params: {
-                    type,
-                    color: type === 'cartoon' ? 'chain-id' : 'element',
-                    params: type === 'ball-and-stick' ? { size: 0.1 } : {}
-                  }}
-                ]
-              }
-            });
-          }
+        // Check if we have a real 3Dmol viewer or mock viewer
+        if (viewer.viewer) {
+          // Real 3Dmol viewer
+          await viewer.zoomTo();
         } else {
           // Mock viewer
-          const structures = viewer.structure?.data;
-          if (structures && structures.length > 0) {
-            const protein = structures[0]; // Assume first structure is protein
-            
-            // Toggle representation
-            const existingReps = viewer.representation?.all || [];
-            const hasRep = existingReps.some(rep => 
-              rep.type === type && rep.structure === protein
-            );
-
-            if (hasRep) {
-              await viewer.removeRepresentationsOfType(type);
-            } else {
-              await viewer.loadStructureFromUrl(
-                '/assets/pdb/3FLY.pdb',
-                'pdb',
-                { representation: type, color: type === 'cartoon' ? 'chain-id' : 'element' }
-              );
-            }
-          }
+          console.log('Mock zoom to fit');
         }
       } catch (error) {
-        console.error('Error toggling representation:', error);
+        console.error('Error zooming to fit:', error);
       }
     }
   };
@@ -126,33 +134,39 @@ const ViewerControls = ({ viewer }) => {
               >
                 Reset View
               </button>
+              <button
+                onClick={handleZoomToFit}
+                className="w-full bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm transition-colors"
+              >
+                Zoom to Fit
+              </button>
+              <button
+                onClick={handleSpin}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded text-sm transition-colors"
+              >
+                Toggle Spin
+              </button>
             </div>
           </div>
 
-        {/* Representation Controls */}
-        <div>
-          <h4 className="text-sm font-medium text-gray-300 mb-2">Protein Style</h4>
-          <div className="space-y-2">
-            <button
-              onClick={() => handleToggleRepresentation('cartoon')}
-              className="w-full fragmap-button inactive text-xs text-left"
-            >
-              <div className="flex items-center">
-                <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                Cartoon Representation
-              </div>
-            </button>
-            <button
-              onClick={() => handleToggleRepresentation('ball-and-stick')}
-              className="w-full fragmap-button inactive text-xs text-left"
-            >
-              <div className="flex items-center">
-                <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                Ball & Stick
-              </div>
-            </button>
+          {/* Representation Controls */}
+          <div>
+            <h4 className="text-sm font-medium text-gray-300 mb-2">Representations</h4>
+            <div className="grid grid-cols-1 gap-2">
+              <button
+                onClick={() => handleToggleRepresentation('cartoon')}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded text-sm transition-colors"
+              >
+                Toggle Cartoon
+              </button>
+              <button
+                onClick={() => handleToggleRepresentation('ball-and-stick')}
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded text-sm transition-colors"
+              >
+                Toggle Ball & Stick
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

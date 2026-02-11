@@ -8,7 +8,7 @@ This interactive demo provides a comprehensive exploration of P38 MAP Kinase wit
 
 ### Key Features
 
-- **3D Molecular Visualization**: Interactive Mol* viewer with protein and ligand rendering
+- **3D Molecular Visualization**: Interactive 3Dmol.js viewer with protein and ligand rendering
 - **SILCS FragMaps**: Toggle multiple FragMap types (hydrophobic, H-bond donors/acceptors, electrostatic, aromatic)
 - **Ligand Comparison**: Switch between crystal ligand and SILCS-MC refined poses
 - **Dynamic Controls**: Adjustable isovalues for FragMap surface rendering
@@ -57,8 +57,8 @@ Each colored region represents energetically favorable locations for specific ty
 - **Vite** - Fast development server and build tool
 - **Tailwind CSS** - Utility-first CSS framework
 - **Framer Motion** - Smooth animations and transitions
-- **Mol\*** - Scientific molecular visualization library
-- **Three.js** - 3D graphics rendering (Mol* dependency)
+- **3Dmol.js** - Scientific molecular visualization library
+- **Three.js** - 3D graphics rendering (3Dmol.js dependency)
 
 ### Development Tools
 
@@ -283,7 +283,7 @@ For questions, issues, or suggestions:
 
 ## 🙏 Acknowledgments
 
-- **Mol\*** Development Team for the excellent molecular visualization library
+- **3Dmol.js** Development Team for the excellent molecular visualization library
 - **SILCS Bio** for the scientific methodology and inspiration
 - **PDB** for providing the 3FLY structure data
 - **Open Source Community** for the tools and libraries that make this project possible

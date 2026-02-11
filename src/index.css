@@ -24,6 +24,16 @@
   
   .fragmap-button {
     @apply px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm;
+    transform: translateY(0);
+  }
+  
+  .fragmap-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .fragmap-button:active:not(:disabled) {
+    transform: translateY(0);
   }
   
   .fragmap-button.active {
