@@ -209,12 +209,10 @@ const generateSpheresFromGrid = (fragMapData, config) => {
   const thresholdMode = config.thresholdMode || (isoValue < 0 ? 'lower' : 'higher');
   const isLowerMode = thresholdMode === 'lower';
 
-  // Make threshold consistently "stricter" by adding range away from zero
-  // Lower mode (GFE): -0.8 -> -0.9 (stricter)
-  // Higher mode (Excl): 0.5 -> 0.6 (stricter)
-  const threshold = isLowerMode
-    ? isoValue - isoValueRange
-    : isoValue + isoValueRange;
+  // For isovalue adjustment, use the isovalue directly as threshold
+  // Lower mode (GFE): more negative values = better binding
+  // Higher mode (Excl): more positive values = stronger exclusion
+  const threshold = isoValue;
 
   const spacing = gridInfo.grid_spacing || 0.8;
 

@@ -29,7 +29,13 @@ const FragMapManager = () => {
     const currentRepRef = activeRepsRef.current.get(fragMapId);
 
     // Skip if state already matches and no refresh forced
-    if (!forceRefresh && ((isActivating && currentRepRef) || (!isActivating && !currentRepRef))) {
+    // Note: currentRepRef can be null even for active FragMaps if no spheres were generated
+    if (!forceRefresh && isActivating && currentRepRef) {
+      console.log(`⏭️ [FRAGMAP-MANAGER] ${fragMapId} already active with representation, skipping`);
+      return;
+    }
+    if (!forceRefresh && !isActivating && !currentRepRef && !activeFragMaps.has(fragMapId)) {
+      console.log(`⏭️ [FRAGMAP-MANAGER] ${fragMapId} already inactive, skipping`);
       return;
     }
 
@@ -119,29 +125,43 @@ const FragMapManager = () => {
   }, [isoValues, selectedProteinPart, viewer, updateFragMapVisualization]);
 
   // Auto-enable FragMaps when protein selection is made for the first time
+  // Only auto-enable if no FragMaps have ever been activated (user hasn't made choices)
   useEffect(() => {
     if (viewer && selectedProteinPart?.residues?.length && activeFragMaps.size === 0) {
-      fragMapTypes.forEach(fm => {
-        if (!activeFragMaps.has(fm.id)) {
+      // Check if user has manually controlled FragMaps before
+      const hasUserInteracted = localStorage.getItem('fragmap-user-interacted') === 'true';
+      
+      if (!hasUserInteracted) {
+        fragMapTypes.forEach(fm => {
           actions.toggleFragMap(fm.id);
-        }
-      });
-      setNarrative(`Protein region selected: ${selectedProteinPart.description}. Automatically enabled all FragMaps.`);
+        });
+        setNarrative(`Protein region selected: ${selectedProteinPart.description}. Automatically enabled all FragMaps.`);
+      }
     }
   }, [selectedProteinPart, viewer, activeFragMaps.size, actions, setNarrative]);
 
   // Ligand loaded event listener
   useEffect(() => {
     const handleLigandLoaded = (event) => {
-      // Auto-enable FragMaps even if no protein part is selected
-      if (activeFragMaps.size === 0) {
+      // Auto-enable FragMaps even if no protein part is selected (only if user hasn't interacted)
+      const hasUserInteracted = localStorage.getItem('fragmap-user-interacted') === 'true';
+      
+      if (activeFragMaps.size === 0 && !hasUserInteracted) {
         fragMapTypes.forEach(fm => actions.toggleFragMap(fm.id));
         setNarrative(`${event.detail.ligandName} loaded. Automatically enabled FragMaps.`);
       }
     };
+
     window.addEventListener('ligandLoaded', handleLigandLoaded);
     return () => window.removeEventListener('ligandLoaded', handleLigandLoaded);
-  }, [selectedProteinPart, activeFragMaps.size, actions, setNarrative]);
+  }, [activeFragMaps.size, actions, setNarrative]);
+
+  // Track user interaction with FragMaps
+  useEffect(() => {
+    if (activeFragMaps.size > 0) {
+      localStorage.setItem('fragmap-user-interacted', 'true');
+    }
+  }, [activeFragMaps.size]);
 
   return null;
 };

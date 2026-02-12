@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preprocess-fragmaps": "node scripts/preprocessFragMaps.js",
+    "build-with-fragmaps": "npm run preprocess-fragmaps && npm run build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "3dmol": "^2.4.1",

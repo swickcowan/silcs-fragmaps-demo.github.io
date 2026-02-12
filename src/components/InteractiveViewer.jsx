@@ -131,18 +131,13 @@ const InteractiveViewer = () => {
                     });
                     setProteinSelectionBounds(proteinRegion.bounds);
 
-                    // Update narrative with specific region information
-                    const regionDesc = getRegionDescription(proteinRegion.residues);
-                    const narrativePrefix = proteinRegion.isDummy ?
-                      'Demo mode: Using sample protein region for testing. ' :
-                      'Selected protein region: ';
-
-                    setCurrentNarrative(
-                      `${narrativePrefix}${regionDesc}. FragMaps will now render specifically for this area. ` +
-                      `The system found ${proteinRegion.residues.length} residues within the selection. ` +
-                      `Adjust isovalues to refine the visualization of interaction sites.` +
-                      (proteinRegion.isDummy ? ' The actual protein structure detection will be available in a future update.' : '')
-                    );
+                    // Update narrative with simple footer format
+                    const activeCount = state.activeFragMaps?.size || 0;
+                    const ligandName = state.selectedLigand === 'crystal' ? 'Crystal Ligand' : 
+                                      state.selectedLigand === 'sil1' ? 'SILCS-MC Pose 1' : 
+                                      state.selectedLigand === 'sil2' ? 'SILCS-MC Pose 2' : 'Crystal Ligand';
+                    
+                    setCurrentNarrative(`P38 MAP Kinase (3FLY)\n${activeCount} Active FragMaps\n${ligandName}`);
 
                     // Clear existing fragmaps when new selection is made
                     actions.clearFragMaps();
@@ -296,7 +291,7 @@ const InteractiveViewer = () => {
         }, 1000); // Wait 1 second for ligand to fully load
 
         console.log('🎉 Ligand loading completed successfully!');
-        setCurrentNarrative(`Loaded ${ligand.name}: ${ligand.description}. The ligand is shown in ball-and-stick representation with element-based coloring. FragMaps will automatically load to show interaction sites.`);
+        setCurrentNarrative(`Loaded ${ligand.name}: ${ligand.description}. The ligand is shown in ball-and-stick representation with element-based coloring.`);
       } else {
         // Mock viewer - simple loading
         console.log('📱 Mock viewer detected - using simple ligand loading');
@@ -475,31 +470,6 @@ const InteractiveViewer = () => {
         {/* Right Panel - Caption */}
         <div className="lg:w-80 p-6">
           <CaptionPanel caption={currentNarrative} />
-        </div>
-      </div>
-
-      {/* Bottom Info Bar */}
-      <div className="bg-molstar-bg border-t border-white/10 p-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between text-sm text-gray-400">
-            <div className="flex items-center space-x-4">
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                P38 MAP Kinase (3FLY)
-              </span>
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                {state.activeFragMaps.size} Active FragMaps
-              </span>
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                {ligandOptions.find(l => l.id === selectedLigand)?.name}
-              </span>
-            </div>
-            <div className="text-xs">
-              Interactive SILCS FragMaps Demo
-            </div>
-          </div>
         </div>
       </div>
     </div>

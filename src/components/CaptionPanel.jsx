@@ -1,5 +1,6 @@
 import React from 'react';
 import { fragMapLegend } from '../config/fragMapTypes.js';
+import { useViewer } from '../context/ViewerContext.jsx';
 
 /**
  * CaptionPanel Component
@@ -7,14 +8,53 @@ import { fragMapLegend } from '../config/fragMapTypes.js';
  * Uses props-based interface for compatibility with fixed InteractiveViewer
  */
 const CaptionPanel = ({ caption }) => {
+  const { state } = useViewer();
+  const { activeFragMaps, selectedLigand } = state;
+  
+  // Generate footer-style display matching the exact footer rendering
+  const generateCurrentViewText = () => {
+    const activeCount = activeFragMaps.size;
+    const ligandName = selectedLigand === 'crystal' ? 'Crystal Ligand' : 
+                      selectedLigand === 'sil1' ? 'SILCS-MC Pose 1' : 
+                      selectedLigand === 'sil2' ? 'SILCS-MC Pose 2' : 'Crystal Ligand';
+    
+    return (
+      <div className="flex items-center space-x-4 text-sm text-gray-400">
+        <span className="flex items-center">
+          <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+          P38 MAP Kinase (3FLY)
+        </span>
+        <span className="flex items-center">
+          <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+          {activeCount} Active FragMaps
+        </span>
+        <span className="flex items-center">
+          <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+          {ligandName}
+        </span>
+      </div>
+    );
+  };
+
   return (
     <div className="control-panel h-full">
+      {/* Current View Description */}
       <div className="p-4">
-        <h4 className="text-sm font-medium text-gray-300 mb-2">Current View</h4>
-        <div className="p-3 bg-white/5 rounded-lg border border-white/10">
-          <p className="text-sm text-gray-300 leading-relaxed">
-            {caption || 'Select a ligand and toggle FragMaps to begin exploring the molecular interactions.'}
-          </p>
+        <div className="space-y-2 text-sm text-gray-400">
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            P38 MAP Kinase (3FLY)
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+            {activeFragMaps.size} Active FragMaps
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+            {selectedLigand === 'crystal' ? 'Crystal Ligand' : 
+             selectedLigand === 'sil1' ? 'SILCS-MC Pose 1' : 
+             selectedLigand === 'sil2' ? 'SILCS-MC Pose 2' : 'Crystal Ligand'}
+          </div>
         </div>
       </div>
 

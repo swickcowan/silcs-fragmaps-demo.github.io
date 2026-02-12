@@ -22,17 +22,11 @@ const FragMapToggles = memo(({
       {!selectedProteinPart || !selectedProteinPart.residues || selectedProteinPart.residues.length === 0 ? (
         <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
           <p className="text-sm text-yellow-200">
-            <span className="font-semibold">Instructions:</span> Click on a protein part first to select it, then enable FragMaps to see interaction sites for that specific region.
+            <span className="font-semibold">Instructions:</span> Begin interacting with the protein, then enable FragMaps to learn more about binding sites.
           </p>
         </div>
-      ) : (
-        <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg">
-          <p className="text-sm text-green-200">
-            <span className="font-semibold">Region Selected:</span> {selectedProteinPart.description}
-          </p>
-        </div>
-      )}
-      
+      ) : null}
+            
       <div className="space-y-3">
         {fragMapTypes.map((fragMap) => {
           const isActive = activeFragMaps.has(fragMap.id);

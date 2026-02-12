@@ -6,6 +6,7 @@
 
 import { parseFragMapFile } from './fragMapParser.js';
 import { validateVolumeData } from './volumeRenderer.js';
+import { loadBinaryFragMap, checkBinaryFilesAvailable } from './binaryFragMapLoader.js';
 
 /**
  * Parses SILCS .map format files
@@ -149,7 +150,7 @@ const FRAGMAP_FORMATS = {
  */
 export const loadFragMapData = async (fragMapId, baseUrl = '/assets/fragmaps-dx', preferredFormat = 'dx') => {
   try {
-    console.log(`Loading FragMap ${fragMapId} in ${preferredFormat} format...`);
+    console.log(`Loading FragMap ${fragMapId}...`);
     
     // Import fragMapTypes to get the correct file name
     const { fragMapTypes } = await import('../config/fragMapTypes.js');
@@ -158,6 +159,34 @@ export const loadFragMapData = async (fragMapId, baseUrl = '/assets/fragmaps-dx'
     if (!fragMapType) {
       throw new Error(`Unknown FragMap type: ${fragMapId}`);
     }
+    
+    // Try binary loader first for instant loading
+    const binaryAvailable = await checkBinaryFilesAvailable();
+    if (binaryAvailable) {
+      try {
+        console.log(`🚀 [FRAGMAP-LOADER] Using binary loader for instant loading`);
+        const binaryData = await loadBinaryFragMap(fragMapId);
+        
+        // Validate the loaded data
+        if (!validateFragMapData(binaryData)) {
+          throw new Error(`Invalid binary FragMap data for ${fragMapId}`);
+        }
+        
+        console.log(`✅ [FRAGMAP-LOADER] Successfully loaded binary FragMap ${fragMapId}:`, {
+          gridDimensions: binaryData.gridInfo,
+          dataPoints: binaryData.gridData.length,
+          energyRange: getEnergyRange(binaryData.gridData),
+          loadMethod: 'binary'
+        });
+        
+        return binaryData;
+      } catch (binaryError) {
+        console.warn(`⚠️ [FRAGMAP-LOADER] Binary load failed, falling back to DX:`, binaryError.message);
+      }
+    }
+    
+    // Fallback to original DX file loading
+    console.log(`📁 [FRAGMAP-LOADER] Using DX file loader for ${fragMapId}`);
     
     // Use the fileName from the configuration
     const fileName = fragMapType.fileName || `${fragMapId}${preferredFormat === 'dx' ? '.dx' : '.map'}`;
@@ -178,7 +207,8 @@ export const loadFragMapData = async (fragMapId, baseUrl = '/assets/fragmaps-dx'
     console.log(`Successfully loaded FragMap ${fragMapId}:`, {
       gridDimensions: fragMapData.gridInfo,
       dataPoints: fragMapData.gridData.length,
-      energyRange: getEnergyRange(fragMapData.gridData)
+      energyRange: getEnergyRange(fragMapData.gridData),
+      loadMethod: 'dx'
     });
     
     return fragMapData;

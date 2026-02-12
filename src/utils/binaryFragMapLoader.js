@@ -34,9 +34,13 @@ export const loadBinaryFragMap = async (fragMapId) => {
     
     const binaryData = await response.json();
     
-    // Decode base64 grid data back to Float32Array
-    const gridDataBuffer = Buffer.from(binaryData.gridDataBase64, 'base64');
-    const gridData = new Float32Array(gridDataBuffer.buffer);
+    // Decode base64 grid data back to Float32Array (browser compatible)
+    const binaryString = atob(binaryData.gridDataBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const gridData = new Float32Array(bytes.buffer);
     
     // Reconstruct the FragMap data structure
     const fragMapData = {

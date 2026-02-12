@@ -126,7 +126,7 @@ const processFragMaps = async () => {
           gridInfo,
           dataPoints: gridData.length
         },
-        // Convert Float32Array to base64 for JSON storage
+        // Convert Float32Array to base64 for browser-compatible JSON storage
         gridDataBase64: Buffer.from(gridData.buffer).toString('base64')
       };
       
