@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-02-11T21:33:40.605Z",
+  "fragMaps": [
+    {
+      "id": "3fly.acec.gfe",
+      "binaryFile": "3fly.acec.gfe.json",
+      "originalFile": "3fly.acec.gfe.dx"
+    },
+    {
+      "id": "3fly.apolar.gfe",
+      "binaryFile": "3fly.apolar.gfe.json",
+      "originalFile": "3fly.apolar.gfe.dx"
+    },
+    {
+      "id": "3fly.excl",
+      "binaryFile": "3fly.excl.json",
+      "originalFile": "3fly.excl.dx"
+    },
+    {
+      "id": "3fly.hbacc.gfe",
+      "binaryFile": "3fly.hbacc.gfe.json",
+      "originalFile": "3fly.hbacc.gfe.dx"
+    },
+    {
+      "id": "3fly.hbdon.gfe",
+      "binaryFile": "3fly.hbdon.gfe.json",
+      "originalFile": "3fly.hbdon.gfe.dx"
+    },
+    {
+      "id": "3fly.mamn.gfe",
+      "binaryFile": "3fly.mamn.gfe.json",
+      "originalFile": "3fly.mamn.gfe.dx"
+    },
+    {
+      "id": "3fly.meoo.gfe",
+      "binaryFile": "3fly.meoo.gfe.json",
+      "originalFile": "3fly.meoo.gfe.dx"
+    },
+    {
+      "id": "3fly.tipo.gfe",
+      "binaryFile": "3fly.tipo.gfe.json",
+      "originalFile": "3fly.tipo.gfe.dx"
+    }
+  ]
+}
