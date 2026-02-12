@@ -6,6 +6,19 @@
 import { fragMapTypes } from '../config/fragMapTypes.js';
 
 /**
+ * Gets the correct base path for assets based on the environment
+ * @returns {string} Base path for assets
+ */
+const getBasePath = () => {
+  // In development, use root path
+  if (import.meta.env.DEV) {
+    return '';
+  }
+  // In production (GitHub Pages), use the configured base path
+  return import.meta.env.BASE_URL || '';
+};
+
+/**
  * Loads pre-processed binary FragMap data
  * @param {string} fragMapId - FragMap identifier
  * @returns {Promise<Object>} Parsed FragMap data
@@ -22,7 +35,7 @@ export const loadBinaryFragMap = async (fragMapId) => {
     
     // Construct binary file path
     const binaryFileName = fragMapType.fileName.replace('.dx', '.json');
-    const binaryUrl = `/assets/fragmaps-binary/${binaryFileName}`;
+    const binaryUrl = `${getBasePath()}/assets/fragmaps-binary/${binaryFileName}`;
     
     console.log(`📁 [BINARY-LOADER] Loading: ${binaryUrl}`);
     
@@ -73,7 +86,8 @@ export const loadBinaryFragMap = async (fragMapId) => {
  */
 export const checkBinaryFilesAvailable = async () => {
   try {
-    const response = await fetch('/assets/fragmaps-binary/index.json');
+    const basePath = getBasePath();
+    const response = await fetch(`${basePath}/assets/fragmaps-binary/index.json`);
     return response.ok;
   } catch (error) {
     return false;

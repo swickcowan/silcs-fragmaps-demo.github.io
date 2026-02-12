@@ -7,6 +7,19 @@
 import * as $3Dmol from '3dmol';
 
 /**
+ * Gets the correct base path for assets based on the environment
+ * @returns {string} Base path for assets
+ */
+const getBasePath = () => {
+  // In development, use root path
+  if (import.meta.env.DEV) {
+    return '';
+  }
+  // In production (GitHub Pages), use the configured base path
+  return import.meta.env.BASE_URL || '';
+};
+
+/**
  * Creates and initializes a 3Dmol.js viewer
  * @param {HTMLElement} container - Container element for the viewer
  * @param {Object} options - Viewer configuration options
@@ -63,9 +76,11 @@ export const create3DmolViewer = async (container, options = {}) => {
        */
       async loadProtein(url, options = {}) {
         try {
-          console.log(`Loading protein from: ${url}`);
+          // Add base path to URL if it's a relative path
+          const fullUrl = url.startsWith('http') ? url : `${getBasePath()}${url}`;
+          console.log(`Loading protein from: ${fullUrl}`);
 
-          const response = await fetch(url);
+          const response = await fetch(fullUrl);
           if (!response.ok) {
             throw new Error(`Failed to fetch PDB file: ${response.status}`);
           }
@@ -75,7 +90,7 @@ export const create3DmolViewer = async (container, options = {}) => {
 
           this.models.set(model, {
             type: 'protein',
-            url,
+            url: fullUrl,
             loadedAt: new Date().toISOString()
           });
 
@@ -96,9 +111,11 @@ export const create3DmolViewer = async (container, options = {}) => {
        */
       async loadLigand(url, options = {}) {
         try {
-          console.log(`Loading ligand from: ${url}`);
+          // Add base path to URL if it's a relative path
+          const fullUrl = url.startsWith('http') ? url : `${getBasePath()}${url}`;
+          console.log(`Loading ligand from: ${fullUrl}`);
 
-          const response = await fetch(url);
+          const response = await fetch(fullUrl);
           if (!response.ok) {
             throw new Error(`Failed to fetch SDF file: ${response.status}`);
           }
@@ -108,7 +125,7 @@ export const create3DmolViewer = async (container, options = {}) => {
 
           this.models.set(model, {
             type: 'ligand',
-            url,
+            url: fullUrl,
             loadedAt: new Date().toISOString()
           });
 

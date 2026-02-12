@@ -160,6 +160,10 @@ export const loadFragMapData = async (fragMapId, baseUrl = '/assets/fragmaps-dx'
       throw new Error(`Unknown FragMap type: ${fragMapId}`);
     }
     
+    // Get the correct base path for the environment
+    const basePath = import.meta.env.DEV ? '' : (import.meta.env.BASE_URL || '');
+    const fullBaseUrl = baseUrl.startsWith('http') ? baseUrl : `${basePath}${baseUrl}`;
+    
     // Try binary loader first for instant loading
     const binaryAvailable = await checkBinaryFilesAvailable();
     if (binaryAvailable) {
@@ -193,7 +197,7 @@ export const loadFragMapData = async (fragMapId, baseUrl = '/assets/fragmaps-dx'
     
     // Only try the preferred format since we're now using DX files
     console.log(`Loading FragMap file: ${fileName}`);
-    const fragMapData = await tryLoadFile(fileName, baseUrl, preferredFormat);
+    const fragMapData = await tryLoadFile(fileName, fullBaseUrl, preferredFormat);
     
     if (!fragMapData) {
       throw new Error(`Could not load FragMap ${fragMapId} (${fileName}) - file not found or parsing failed`);
