@@ -1,6 +1,7 @@
 import React from 'react';
 import { fragMapLegend } from '../config/fragMapTypes.js';
 import { useViewer } from '../context/ViewerContext.jsx';
+import { ligandOptions } from '../config/ligandOptions.js';
 
 /**
  * CaptionPanel Component
@@ -11,30 +12,9 @@ const CaptionPanel = ({ caption }) => {
   const { state } = useViewer();
   const { activeFragMaps, selectedLigand } = state;
   
-  // Generate footer-style display matching the exact footer rendering
-  const generateCurrentViewText = () => {
-    const activeCount = activeFragMaps.size;
-    const ligandName = selectedLigand === 'crystal' ? 'Crystal Ligand' : 
-                      selectedLigand === 'sil1' ? 'SILCS-MC Pose 1' : 
-                      selectedLigand === 'sil2' ? 'SILCS-MC Pose 2' : 'Crystal Ligand';
-    
-    return (
-      <div className="flex items-center space-x-4 text-sm text-gray-400">
-        <span className="flex items-center">
-          <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-          P38 MAP Kinase (3FLY)
-        </span>
-        <span className="flex items-center">
-          <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-          {activeCount} Active FragMaps
-        </span>
-        <span className="flex items-center">
-          <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-          {ligandName}
-        </span>
-      </div>
-    );
-  };
+  // Get the ligand name dynamically from ligandOptions
+  const selectedLigandOption = ligandOptions.find(ligand => ligand.id === selectedLigand);
+  const ligandName = selectedLigandOption ? selectedLigandOption.name : 'Crystal Ligand';
 
   return (
     <div className="control-panel h-full">
@@ -51,9 +31,7 @@ const CaptionPanel = ({ caption }) => {
           </div>
           <div className="flex items-center">
             <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-            {selectedLigand === 'crystal' ? 'Crystal Ligand' : 
-             selectedLigand === 'sil1' ? 'SILCS-MC Pose 1' : 
-             selectedLigand === 'sil2' ? 'SILCS-MC Pose 2' : 'Crystal Ligand'}
+            {ligandName}
           </div>
         </div>
       </div>

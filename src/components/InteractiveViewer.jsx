@@ -23,10 +23,11 @@ const InteractiveViewer = () => {
   const retryCountRef = useRef(0);
   const maxRetries = 5;
 
-  // Use context state or fall back to local state for compatibility
+  // Use context state
   const [isLoading, setIsLoading] = useState(state.isLoading);
-  const [selectedLigand, setSelectedLigand] = useState(state.selectedLigand || ligandOptions[0]?.id || '');
   const [currentNarrative, setCurrentNarrative] = useState(state.currentNarrative || '');
+  const selectedLigand = state.selectedLigand;
+  const setSelectedLigand = actions.setSelectedLigand;
 
   // Initialize 3Dmol.js viewer
   useEffect(() => {
@@ -133,9 +134,8 @@ const InteractiveViewer = () => {
 
                     // Update narrative with simple footer format
                     const activeCount = state.activeFragMaps?.size || 0;
-                    const ligandName = state.selectedLigand === 'crystal' ? 'Crystal Ligand' : 
-                                      state.selectedLigand === 'sil1' ? 'SILCS-MC Pose 1' : 
-                                      state.selectedLigand === 'sil2' ? 'SILCS-MC Pose 2' : 'Crystal Ligand';
+                    const selectedLigandOption = ligandOptions.find(ligand => ligand.id === state.selectedLigand);
+                    const ligandName = selectedLigandOption ? selectedLigandOption.name : 'Crystal Ligand';
                     
                     setCurrentNarrative(`P38 MAP Kinase (3FLY)\n${activeCount} Active FragMaps\n${ligandName}`);
 
