@@ -19,19 +19,12 @@ const FragMapToggles = memo(({
     <div className="control-panel">
       <h3 className="text-lg font-semibold mb-4 text-white leading-relaxed">SILCS FragMaps</h3>
       
-      {!selectedProteinPart || !selectedProteinPart.residues || selectedProteinPart.residues.length === 0 ? (
-        <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
-          <p className="text-sm text-yellow-200">
-            <span className="font-semibold">Instructions:</span> Begin interacting with the protein, then enable FragMaps to learn more about binding sites.
-          </p>
-        </div>
-      ) : null}
             
       <div className="space-y-3">
         {fragMapTypes.map((fragMap) => {
           const isActive = activeFragMaps.has(fragMap.id);
           const currentIsoValue = isoValues[fragMap.id] || fragMap.isoValue;
-          const isDisabled = !selectedProteinPart || !selectedProteinPart.residues || selectedProteinPart.residues.length === 0;
+          const isDisabled = false;
           
           return (
             <div
@@ -40,22 +33,15 @@ const FragMapToggles = memo(({
             >
               <button
                 onClick={(e) => {
-                  if (isDisabled) {
-                    e.preventDefault();
-                    return;
-                  }
                   console.log(`🖱️ BUTTON CLICKED: ${fragMap.id}`);
                   e.preventDefault();
                   e.stopPropagation();
                   onToggleFragMap(fragMap.id);
                 }}
-                disabled={isDisabled}
                 className={`w-full fragmap-button text-left text-sm transition-colors ${
                   isActive ? 'active' : 'inactive'
-                } ${
-                  isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'
                 }`}
-                title={isDisabled ? 'Select a protein part first' : `Toggle ${fragMap.name} FragMap`}
+                title={`Toggle ${fragMap.name} FragMap`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">

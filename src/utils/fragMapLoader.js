@@ -161,7 +161,7 @@ export const loadFragMapData = async (fragMapId, baseUrl = '/assets/fragmaps-dx'
     }
     
     // Get the correct base path for the environment
-    const basePath = import.meta.env.DEV ? '' : (import.meta.env.BASE_URL || '');
+    const basePath = import.meta.env.BASE_URL || '';
     const fullBaseUrl = baseUrl.startsWith('http') ? baseUrl : `${basePath}${baseUrl}`;
     
     // Try binary loader first for instant loading

@@ -10,9 +10,10 @@ import { fragMapTypes } from '../config/fragMapTypes.js';
  * @returns {string} Base path for assets
  */
 const getBasePath = () => {
-  // In development, use root path
+  // In development, check if we're running with a base path
   if (import.meta.env.DEV) {
-    return '';
+    // For development with GitHub Pages base path, use the same base path
+    return import.meta.env.BASE_URL || '';
   }
   // In production (GitHub Pages), use the configured base path
   return import.meta.env.BASE_URL || '';

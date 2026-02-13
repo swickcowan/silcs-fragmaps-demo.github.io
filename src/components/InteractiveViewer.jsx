@@ -76,7 +76,7 @@ const InteractiveViewer = () => {
         setIsLoading(false);
 
         // Set initial narrative
-        setCurrentNarrative('P38 MAP Kinase structure loaded successfully. Click on any part of the protein to select it, then enable FragMaps to see interaction sites for that specific region.');
+        setCurrentNarrative('P38 MAP Kinase structure loaded successfully. Enable FragMaps to see interaction sites and binding regions.');
 
         // Setup interactions after a delay to ensure 3Dmol is fully ready
         setTimeout(() => {

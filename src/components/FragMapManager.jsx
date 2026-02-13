@@ -124,21 +124,7 @@ const FragMapManager = () => {
     });
   }, [isoValues, selectedProteinPart, viewer, updateFragMapVisualization]);
 
-  // Auto-enable FragMaps when protein selection is made for the first time
-  // Only auto-enable if no FragMaps have ever been activated (user hasn't made choices)
-  useEffect(() => {
-    if (viewer && selectedProteinPart?.residues?.length && activeFragMaps.size === 0) {
-      // Check if user has manually controlled FragMaps before
-      const hasUserInteracted = localStorage.getItem('fragmap-user-interacted') === 'true';
-      
-      if (!hasUserInteracted) {
-        fragMapTypes.forEach(fm => {
-          actions.toggleFragMap(fm.id);
-        });
-        setNarrative(`Protein region selected: ${selectedProteinPart.description}. Automatically enabled all FragMaps.`);
-      }
-    }
-  }, [selectedProteinPart, viewer, activeFragMaps.size, actions, setNarrative]);
+  // FragMaps are now always accessible - no auto-enable needed
 
   // Ligand loaded event listener
   useEffect(() => {
